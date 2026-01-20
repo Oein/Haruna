@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="focused">Focusd</div>
+      <input type="text" placeholder="Click here and press keys" />
+    </div>
+    <script>
+      window.focus();
+      window.addEventListener("focus", () => {
+        document.getElementById("focused").textContent = "Focused";
+      });
+      window.addEventListener("blur", () => {
+        document.getElementById("focused").textContent = "Blurred";
+      });
+      const waitForNS = () => {
+        return new Promise((resolve) => {
+          const checkNS = () => {
+            if (window.ns) {
+              resolve(window.ns);
+            } else {
+              setTimeout(checkNS, 50);
+            }
+          };
+          checkNS();
+        });
+      };
+      waitForNS().then((ns) => {
+        // Keyboard to gamepad mapping
+        const keyState = {};
+        // Map keys to button bit positions
+        const keyToButton = {
+          " ": 2, // Space -> A
+          Shift: 3, // Enter -> X
+          q: 4, // Q -> L
+          Q: 4,
+          e: 5, // E -> R
+          E: 5,
+          Escape: 8, // ESC -> Minus
+          Backspace: 1, // Backspace -> B
+          1: 12, // 1 -> Home
+        };
+
+        // WASD for left stick
+        const stickKeys = {
+          w: "up",
+          W: "up",
+          a: "left",
+          A: "left",
+          s: "down",
+          S: "down",
+          d: "right",
+          D: "right",
+        };
+
+        // Arrow keys for DPad
+        const dpadKeys = {
+          ArrowUp: "up",
+          ArrowDown: "down",
+          ArrowLeft: "left",
+          ArrowRight: "right",
+        };
+
+        const input = document.querySelector('input[type="text"]');
+        input.addEventListener("keydown", (e) => {
+          e.preventDefault();
+          if (e.repeat) return; // Ignore repeat events
+          keyState[e.key] = true;
+        });
+        input.addEventListener("keyup", (e) => {
+          e.preventDefault();
+          keyState[e.key] = false;
+        });
+        // Clear keyState when input loses focus
+        input.addEventListener("blur", () => {
+          for (const key in keyState) keyState[key] = false;
+        });
+
+        function getButtons() {
+          let buttons = 0;
+          for (const [key, bit] of Object.entries(keyToButton)) {
+            if (keyState[key]) {
+              buttons |= 1 << bit;
+            }
+          }
+          return buttons;
+        }
+
+        function getDPad() {
+          // DPad: up=8, right=4, down=2, left=1, centered=0x0f
+          let dpad = 0;
+          if (keyState["ArrowUp"]) dpad |= 8;
+          if (keyState["ArrowRight"]) dpad |= 4;
+          if (keyState["ArrowDown"]) dpad |= 2;
+          if (keyState["ArrowLeft"]) dpad |= 1;
+          return dpad;
+        }
+
+        function getLeftStick() {
+          // 0~255, 128 is center
+          let x = 128,
+            y = 128;
+          if (keyState["a"]) x = 0;
+          else if (keyState["d"]) x = 255;
+          if (keyState["w"]) y = 0;
+          else if (keyState["s"]) y = 255;
+          return { x, y };
+        }
+
+        function pollKeyboard() {
+          ns.gamepad.setButtons(getButtons());
+          ns.gamepad.setDPad(getDPad());
+          const stick = getLeftStick();
+          ns.gamepad.setLeftX(stick.x);
+          ns.gamepad.setLeftY(stick.y);
+          // Right stick not mapped
+          ns.gamepad.hidInterval();
+          requestAnimationFrame(pollKeyboard);
+        }
+        pollKeyboard();
+      });
+    </script>
+  </body>
+</html>
