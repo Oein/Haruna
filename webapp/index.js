@@ -601,23 +601,38 @@ function createScriptIframe(src) {
 }
 
 async function fetchScriptList() {
-  let existingIframe = null;
   const iframeContainer = document.getElementById("iframeContainer");
   try {
     const response = await fetch("scripts.json");
     if (!response.ok) throw new Error("Failed to fetch scripts.json");
     const scripts = await response.json();
+    const containers = [];
+    for (const script of scripts) {
+      const div = document.createElement("div");
+      div.setAttribute("data-script-name", script);
+      containers.push(div);
+      iframeContainer.appendChild(div);
+    }
     const scriptContainer = document.getElementById("scriptContainer");
-    scripts.forEach((scriptSrc) => {
+    scripts.forEach((scriptSrc, i) => {
       const button = document.createElement("button");
       button.textContent = `${scriptSrc}`;
+      let hasFrame = false;
+      let scriptDiv = containers[i];
+      button.style.background = "#333";
       button.addEventListener("click", () => {
-        if (existingIframe) {
-          iframeContainer.removeChild(existingIframe);
+        if (hasFrame) {
+          // remove existing iframe
+          scriptDiv.innerHTML = "";
+          hasFrame = false;
+          addLog(`Unloaded script: ${scriptSrc}`, "info");
+          button.style.background = "#333";
+          return;
         }
         const iframe = createScriptIframe(scriptSrc);
-        iframeContainer.appendChild(iframe);
-        existingIframe = iframe;
+        scriptDiv.appendChild(iframe);
+        hasFrame = true;
+        button.style.background = "#82AAFF";
         addLog(`Loaded script: ${scriptSrc}`, "info");
       });
       scriptContainer.appendChild(button);
