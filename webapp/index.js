@@ -331,6 +331,7 @@ const setter = (() => {
 let replay_status_callbacks = [setter];
 let isReplaying = false;
 let timeFillInterval = null;
+window.isPlayingGetter = () => isReplaying;
 window.ns = {
   replay: {
     /**
