@@ -8,8 +8,8 @@
   </head>
   <body>
     <div class="container">
-      <div class="control-panel">
-        <!-- Serial Connection -->
+      <!-- Serial Connection -->
+      <div class="row-3">
         <div class="card">
           <h3>Serial Connection</h3>
           <div class="status-indicator">
@@ -87,68 +87,66 @@
           <h3>Debug Log</h3>
           <div class="log" id="log"></div>
         </div>
+      </div>
 
-        <div class="full-grid row-2">
-          <!-- Replay Controls -->
-          <div class="card">
-            <h3>Replay Controls</h3>
-            <div
-              style="
-                display: flex;
-                gap: 10px;
-                margin-bottom: 10px;
-                flex-wrap: wrap;
-              "
-            >
-              <button id="recordBtn">Record</button>
-              <button id="stopBtn" disabled>Stop</button>
-              <button id="saveReplayBtn" disabled>Save Replay</button>
-              <button id="stopReplayBtn" disabled>Stop Replay</button>
-              <button id="exportBtn">Export</button>
-              <button id="importBtn">Import</button>
-              <input
-                type="file"
-                id="importFile"
-                accept="application/json"
-                style="display: none"
-              />
-            </div>
-            <div>
-              <div class="status-percentage">
-                <div class="percentage-label">Replay Status</div>
-                <div class="percentage-bar">
-                  <div
-                    class="percentage-fill"
-                    id="replayTimeFill"
-                    style="
-                      width: 0%;
-                      background: linear-gradient(
-                        90deg,
-                        #eabc66 0%,
-                        #a27c4b 100%
-                      );
-                    "
-                  ></div>
-                  <div
-                    class="percentage-fill"
-                    id="replayPercentageFill"
-                    style="width: 0%"
-                  ></div>
-                  <div class="percentage-text" id="replayPercentageText">
-                    0%
-                  </div>
-                </div>
+      <div class="full-grid row-2">
+        <!-- Replay Controls -->
+        <div class="card">
+          <h3>Replay Controls</h3>
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              margin-bottom: 10px;
+              flex-wrap: wrap;
+            "
+          >
+            <button id="recordBtn">Record</button>
+            <button id="stopBtn" disabled>Stop</button>
+            <button id="saveReplayBtn" disabled>Save Replay</button>
+            <button id="stopReplayBtn" disabled>Stop Replay</button>
+            <button id="exportBtn">Export</button>
+            <button id="importBtn">Import</button>
+            <input
+              type="file"
+              id="importFile"
+              accept="application/json"
+              style="display: none"
+            />
+          </div>
+          <div>
+            <div class="status-percentage">
+              <div class="percentage-label">Replay Status</div>
+              <div class="percentage-bar">
+                <div
+                  class="percentage-fill"
+                  id="replayTimeFill"
+                  style="
+                    width: 0%;
+                    background: linear-gradient(
+                      90deg,
+                      #eabc66 0%,
+                      #a27c4b 100%
+                    );
+                  "
+                ></div>
+                <div
+                  class="percentage-fill"
+                  id="replayPercentageFill"
+                  style="width: 0%"
+                ></div>
+                <div class="percentage-text" id="replayPercentageText">0%</div>
               </div>
             </div>
-            <div id="replayList"></div>
           </div>
+          <div id="replayList"></div>
+        </div>
 
-          <!-- Script Controls -->
-          <div class="card ifwrap">
-            <h3>Script Controls</h3>
-            <div id="scriptContainer"></div>
-            <div id="iframeContainer"></div>
-          </div>
+        <!-- Script Controls -->
+        <div class="card ifwrap">
+          <h3>Script Controls</h3>
+          <div id="scriptContainer"></div>
+          <div id="iframeContainer"></div>
         </div>
       </div>
     </div>

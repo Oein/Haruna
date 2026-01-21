@@ -16,6 +16,12 @@ body {
   background: white;
   width: 100%;
   padding: 20px;
+  height: 100dvh;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 h1 {
@@ -31,15 +37,9 @@ h1 {
   font-size: 14px;
 }
 
-.control-panel {
-  display: grid;
-  /* 3 items in a row */
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
 .full-grid {
   grid-column: 1 / -1;
+  flex-grow: 1;
 }
 
 @media (max-width: 900px) {
@@ -362,12 +362,14 @@ button.danger:hover:not(:disabled) {
   text-shadow: 0 0 3px white;
 }
 
-.row-2 {
+.row-2,
+.row-3 {
   display: flex;
   flex-direction: row;
   gap: 8px;
 }
-.row-2 > * {
+.row-2 > *,
+.row-3 > * {
   flex: 1;
 }
 

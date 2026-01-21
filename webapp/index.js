@@ -597,6 +597,8 @@ function createScriptIframe(src) {
     };
     nsDFS();
   });
+  // resizeable Y iframe
+  iframe.style.resize = "vertical";
   return iframe;
 }
 
