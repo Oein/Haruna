@@ -193,8 +193,10 @@ function renderReplayList() {
   replays.forEach((r) => {
     const nameEl = document.createElement("span");
     const replayBtn = document.createElement("button");
+    const replayMultiBtn = document.createElement("button");
     const deleteBtn = document.createElement("button");
     const exportBtn = document.createElement("button");
+    const emptyDiv = document.createElement("div");
 
     // Delete button
     deleteBtn.textContent = "Delete";
@@ -207,6 +209,52 @@ function renderReplayList() {
     replayBtn.addEventListener("click", () => {
       playRecording(r);
     });
+    replayMultiBtn.textContent = "Replay (nTimes)";
+    replayMultiBtn.style.marginLeft = "6px";
+    replayMultiBtn.addEventListener("click", () => {
+      const nStr = prompt("Enter number of times to replay:");
+      const n = nStr ? parseInt(nStr) : 1;
+      if (isNaN(n) || n <= 0) {
+        alert("Invalid number");
+        return;
+      }
+      const stopButton = document.createElement("button");
+      stopButton.textContent = "Stop";
+      stopButton.style.marginLeft = "6px";
+      replayMultiBtn.disabled = true;
+      replayBtn.disabled = true;
+
+      emptyDiv.appendChild(stopButton);
+
+      let stopped = false;
+      stopButton.addEventListener("click", () => {
+        stopped = true;
+        replayMultiBtn.disabled = false;
+        replayBtn.disabled = false;
+        emptyDiv.removeChild(stopButton);
+        stopPlaying();
+      });
+      (async () => {
+        for (let i = 0; i < n; i++) {
+          try {
+            await playRecording(r);
+          } catch (e) {
+            alert(`Error during replay: ${(e as Error).message}`);
+            break;
+          }
+          if (stopped) {
+            // Stopped
+            break;
+          }
+        }
+        replayMultiBtn.disabled = false;
+        replayBtn.disabled = false;
+        if (emptyDiv.contains(stopButton)) {
+          emptyDiv.removeChild(stopButton);
+        }
+      })();
+    });
+
     deleteBtn.addEventListener("click", () => {
       if (confirm(`Are you sure you want to delete the recording "${r}"?`)) {
         removeRecording(r);
@@ -235,6 +283,8 @@ function renderReplayList() {
     td1.appendChild(nameEl);
     const td2 = document.createElement("td");
     td2.appendChild(replayBtn);
+    td2.appendChild(replayMultiBtn);
+    td2.appendChild(emptyDiv);
     td2.classList.add("align-right-td");
     td2.appendChild(exportBtn);
     td2.appendChild(deleteBtn);
