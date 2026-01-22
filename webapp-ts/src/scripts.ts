@@ -1,8 +1,71 @@
+import type { NS } from "./global";
 import { addLog } from "./log";
 import { playRecording, stopPlaying } from "./recording";
 import { StateInstance, stateManager } from "./state";
 
-function createScriptIframe(src: string, instance: StateInstance) {
+function createNS(instance: StateInstance, nsname: string): NS {
+  return {
+    replay: {
+      play: (name: string) => {
+        return playRecording(name);
+      },
+      stop: () => {
+        return stopPlaying();
+      },
+    },
+    gamepad: {
+      setButton(buttons) {
+        instance.setButton(buttons);
+      },
+      setButtonByName(name: string, pressed: boolean) {
+        instance.setButtonByName(name as any, pressed);
+      },
+      setDpad(
+        dpad: boolean | number,
+        down?: boolean,
+        left?: boolean,
+        right?: boolean,
+      ) {
+        instance.setDpad(dpad, down, left, right);
+      },
+      setStick(leftX: number, leftY: number, rightX: number, rightY: number) {
+        instance.setSticks(leftX, leftY, rightX, rightY);
+      },
+      setLeftX(value: number) {
+        instance.setLeftX(value);
+      },
+      setLeftY(value: number) {
+        instance.setLeftY(value);
+      },
+      setRightX(value: number) {
+        instance.setRightX(value);
+      },
+      setRightY(value: number) {
+        instance.setRightY(value);
+      },
+      setLeftStick(x: number, y: number) {
+        instance.setLeftStick(x, y);
+      },
+      setRightStick(x: number, y: number) {
+        instance.setRightStick(x, y);
+      },
+    },
+    log: {
+      info: (msg: string) => {
+        addLog(`[${nsname}] ${msg}`, "info");
+      },
+      error: (msg: string) => {
+        addLog(`[${nsname}] ${msg}`, "error");
+      },
+    },
+  };
+}
+
+function createScriptIframe(
+  src: string,
+  instance: StateInstance,
+  nsname: string | null = null,
+) {
   const iframe = document.createElement("iframe");
   iframe.src = src;
   iframe.style.resize = "vertical";
@@ -15,61 +78,7 @@ function createScriptIframe(src: string, instance: StateInstance) {
     }
     // Provide the instance to the iframe
     (window as any).instance = instance;
-    window.ns = {
-      replay: {
-        play: (name: string) => {
-          return playRecording(name);
-        },
-        stop: () => {
-          return stopPlaying();
-        },
-      },
-      gamepad: {
-        setButton(buttons) {
-          instance.setButton(buttons);
-        },
-        setButtonByName(name: string, pressed: boolean) {
-          instance.setButtonByName(name as any, pressed);
-        },
-        setDpad(
-          dpad: boolean | number,
-          down?: boolean,
-          left?: boolean,
-          right?: boolean,
-        ) {
-          instance.setDpad(dpad, down, left, right);
-        },
-        setStick(leftX: number, leftY: number, rightX: number, rightY: number) {
-          instance.setSticks(leftX, leftY, rightX, rightY);
-        },
-        setLeftX(value: number) {
-          instance.setLeftX(value);
-        },
-        setLeftY(value: number) {
-          instance.setLeftY(value);
-        },
-        setRightX(value: number) {
-          instance.setRightX(value);
-        },
-        setRightY(value: number) {
-          instance.setRightY(value);
-        },
-        setLeftStick(x: number, y: number) {
-          instance.setLeftStick(x, y);
-        },
-        setRightStick(x: number, y: number) {
-          instance.setRightStick(x, y);
-        },
-      },
-      log: {
-        info: (msg: string) => {
-          addLog(`[${src}] ${msg}`, "info");
-        },
-        error: (msg: string) => {
-          addLog(`[${src}] ${msg}`, "error");
-        },
-      },
-    };
+    window.ns = createNS(instance, nsname ?? src);
   });
 
   return iframe;
@@ -109,7 +118,7 @@ async function fetchScriptList() {
           button.style.background = "#333";
           return;
         }
-        const iframe = createScriptIframe(scriptSrc, instance);
+        const iframe = createScriptIframe(scriptSrc, instance, scriptName);
         scriptDiv.appendChild(iframe);
         hasFrame = true;
         button.style.background = "#82AAFF";
@@ -122,3 +131,16 @@ async function fetchScriptList() {
   }
 }
 fetchScriptList();
+
+(() => {
+  const devtools = stateManager.createInstance("DevTools");
+  const ns = createNS(devtools, "DevTools");
+  window.dinstance = devtools;
+  window.ns = ns;
+  window.ds = {
+    b: (name, pressed) => devtools.setButtonByName(name as any, pressed),
+    d: (dpad, down, left, right) => devtools.setDpad(dpad, down, left, right),
+    l: (x, y) => devtools.setLeftStick(x, y),
+    r: (x, y) => devtools.setRightStick(x, y),
+  };
+})();

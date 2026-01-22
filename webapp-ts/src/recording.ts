@@ -32,6 +32,8 @@ function emitRecordPlayEvent(
 
 export function recordData(binary: number[]) {
   if (recordStartTime === null) return;
+  if (binary.length !== 7) return;
+  if (recordedData.length == 0) recordStartTime = performance.now();
   const currentTime = performance.now();
   recordedData.push([binary, currentTime - recordStartTime]);
 }
@@ -297,4 +299,3 @@ function renderReplayList() {
 }
 
 updateUI();
-setInterval(updateUI, 1000);

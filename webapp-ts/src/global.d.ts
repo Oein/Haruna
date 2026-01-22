@@ -1,3 +1,5 @@
+import type { StateInstance } from "./state";
+
 export type NS = {
   replay: {
     play: (name: string) => Promise<void>;
@@ -32,10 +34,20 @@ export type NS = {
   };
 };
 
+export type DevNS = {
+  b: (name: string, pressed: boolean) => void;
+  d: (up: boolean, down: boolean, left: boolean, right: boolean) => void;
+  l: (x: number, y: number) => void;
+  r: (x: number, y: number) => void;
+};
+
 declare global {
   interface Window {
     ns: NS;
+    ds: DevNS;
+    dinstance: StateInstance;
     waitForNS: () => Promise<NS>;
+    delay: (ms: number) => Promise<void>;
   }
 }
 
