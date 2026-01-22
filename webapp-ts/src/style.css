@@ -22,6 +22,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  max-height: 100dvh;
+  overflow: hidden;
 }
 
 h1 {
@@ -40,6 +43,8 @@ h1 {
 .full-grid {
   grid-column: 1 / -1;
   flex-grow: 1;
+
+  overflow: hidden;
 }
 
 @media (max-width: 900px) {
@@ -399,6 +404,7 @@ iframe {
 .ifwrap {
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 #iframeContainer {
