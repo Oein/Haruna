@@ -224,8 +224,9 @@ disconnectBtn.addEventListener("click", async () => {
 
 // Update gamepad display
 function updateButtonDisplay() {
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 16; i++) {
     const btn = document.querySelector(`.button-display[data-btn="${i}"]`);
+    if (!btn) continue;
     const isPressed = (gamepadState.buttons >> i) & 1;
     if (isPressed) {
       btn.classList.add("active");
