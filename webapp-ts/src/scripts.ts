@@ -58,6 +58,18 @@ function createNS(instance: StateInstance, nsname: string): NS {
         addLog(`[${nsname}] ${msg}`, "error");
       },
     },
+    b(name, pressed) {
+      instance.setButtonByName(name as any, pressed);
+    },
+    d(up, down, left, right) {
+      instance.setDpad(up, down, left, right);
+    },
+    l(x, y) {
+      instance.setLeftStick(x, y);
+    },
+    r(x, y) {
+      instance.setRightStick(x, y);
+    },
   };
 }
 

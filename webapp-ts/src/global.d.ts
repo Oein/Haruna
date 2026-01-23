@@ -32,6 +32,11 @@ export type NS = {
     info: (msg: string) => void;
     error: (msg: string) => void;
   };
+
+  b: (name: string, pressed: boolean) => void;
+  d: (up: boolean, down: boolean, left: boolean, right: boolean) => void;
+  l: (x: number, y: number) => void;
+  r: (x: number, y: number) => void;
 };
 
 export type DevNS = {
