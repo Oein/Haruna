@@ -10,7 +10,7 @@ const waitForNS = async (): Promise<NS> => {
 waitForNS().then((ns) => {
   async function runner(targetX: number, targetY: number, runTimes: number) {
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-    ns.b("L", true);
+    ns.b("L", false);
     await delay(100);
     ns.b("L", true);
     await delay(100);
