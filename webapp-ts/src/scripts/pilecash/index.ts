@@ -40,9 +40,9 @@ async function setupCamera() {
   videoElement.onloadedmetadata = () => {
     console.log(
       "Video dimensions: " +
-        videoElement.videoWidth +
-        "x" +
-        videoElement.videoHeight,
+      videoElement.videoWidth +
+      "x" +
+      videoElement.videoHeight,
     );
 
     videoElement.style.width = "min(100%, 640px)";
@@ -99,8 +99,8 @@ async function waitForColor(
     const { r, g, b } = await getRGBAt(x, y);
     const distance = Math.sqrt(
       (r - targetColor.r) ** 2 +
-        (g - targetColor.g) ** 2 +
-        (b - targetColor.b) ** 2,
+      (g - targetColor.g) ** 2 +
+      (b - targetColor.b) ** 2,
     );
     console.log(
       `Current color at (${x}, ${y}): rgb(${r}, ${g}, ${b}), distance: ${distance}`,
@@ -163,7 +163,7 @@ async function getHasCachPile(imageBase64: string): Promise<boolean> {
           content: [
             {
               type: "input_text",
-              text: '오늘의 아이템을 보고 돈다발이 있는지 JSON형식으로 응답하시오.\n{"exists": true} 또는 {"exists": false} 형식으로 응답하시오.',
+              text: '주어진 이미지에 "돈다발" 이라는 글자가 있는지 답하시오.\n{"exists": true} 또는 {"exists": false} 형식의 JSON으로만 응답하시오.',
             },
           ],
         },
